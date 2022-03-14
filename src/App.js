@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null, pttTokens: [] };
+  state = { storageValue: 0, web3: null, accounts: null, contract: null, contractAddress: null, pttTokens: [] };
 
   componentDidMount = async () => {
     try {
@@ -36,7 +36,7 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
-      this.setState({ web3, accounts, contract: instance }, this.loadContract);
+      this.setState({ web3, accounts, contract: instance, contractAddress: deployedNetwork.address}, this.loadContract);
     } catch (error) {
       alert('Failed to load web3, accounts, or contract.');
       console.error(error);
@@ -60,7 +60,8 @@ class App extends Component {
         let nft = {
           tokenId: tokenId,
           usage: usage,
-          metadata: metadata
+          metadata: metadata,
+          contractAddress: contract._address
         }
         ptt.push(nft);
       }
@@ -154,7 +155,8 @@ class App extends Component {
                                  {token.metadata.description}<br/>
                                  <small>Uses Remaining: {token.usage}</small>
                                </Card.Text>
-                               <Button variant="primary" onClick={(e) => self.useNFT(token.tokenId)}>USE TOKEN</Button>
+                               <Button variant="primary" onClick={(e) => self.useNFT(token.tokenId)}>USE TOKEN</Button><br/>
+                               <small><a href={'https://testnets.opensea.io/assets/' + token.contractAddress + '/' + token.tokenId} target="_blank">View on OpenSea</a></small>
                              </Card.Body>
                            </Card> 
                          </Col>
